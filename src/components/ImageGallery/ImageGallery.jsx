@@ -1,80 +1,69 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ErrorMsg, Gallery } from './ImageGallery.styled';
 import { getImagesBySearchQuery } from 'services/pixabay-api';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { Button } from 'components/Button/Button';
 const PER_PAGE = 12;
-export class ImageGallery extends Component {
-  state = {
-    hits: [],
-    loading: false,
-    totalHits: 0,
-    page: 1,
-    error: null,
-  };
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.searchQ !== this.props.searchQ) {
-      this.setState({ loading: true, hits: [], totalHits: 0, error: null });
+export const ImageGallery = ({ searchQ }) => {
+  const [hits, setHits] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState(null);
+  const [totalHits, setTotalHits] = useState(0);
+  const didMount = useRef(false);
+  useEffect(() => {
+    setPage(1);
+    setHits([]);
+    setTotalHits(0);
+    setError(null);
+  }, [searchQ]);
+  useEffect(() => {
+    // if (searchQ === '') return;
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    const fetchData = async () => {
       try {
-        const data = await getImagesBySearchQuery(this.props.searchQ);
+        const data = await getImagesBySearchQuery(searchQ, page);
+        setHits(hits => [...hits, ...data.hits]);
+        if (page === 1) {
+          setTotalHits(data.totalHits);
+          setError(!data.totalHits ? { message: 'No results' } : null);
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    setLoading(true);
+    fetchData();
+  }, [page, searchQ]);
+  const onLoadMore = e => setPage(page => page + 1);
+  return (
+    <>
+      <Gallery>
+        {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
+          <ImageGalleryItem
+            key={id}
+            webformatURL={webformatURL}
+            tags={tags}
+            largeImageURL={largeImageURL}
+          />
+        ))}
+      </Gallery>
+      {error && <ErrorMsg>{error.message}</ErrorMsg>}
+      <Loader visible={loading} />
+      {totalHits > 0 && page * PER_PAGE < totalHits && !loading && (
+        <Button onLoadMore={onLoadMore}></Button>
+      )}
+    </>
+  );
+};
 
-        this.setState({
-          hits: data.hits,
-          totalHits: data.totalHits,
-          page: 1,
-          error: data.totalHits === 0 ? { message: 'No results' } : null,
-        });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ loading: false });
-      }
-    }
-    if (this.state.page > 1 && prevState.page !== this.state.page) {
-      this.setState({ loading: true });
-      try {
-        const data = await getImagesBySearchQuery(
-          this.props.searchQ,
-          this.state.page
-        );
-        this.setState(state => ({
-          hits: [...state.hits, ...data.hits],
-        }));
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ loading: false });
-      }
-    }
-  }
-  onLoadMore = e => {
-    this.setState(state => ({ page: state.page + 1 }));
-  };
-  render() {
-    const { hits, loading, totalHits, page, error } = this.state;
-    return (
-      <>
-        <Gallery>
-          {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
-            <ImageGalleryItem
-              key={id}
-              webformatURL={webformatURL}
-              tags={tags}
-              largeImageURL={largeImageURL}
-            />
-          ))}
-        </Gallery>
-        {error && <ErrorMsg>{error.message}</ErrorMsg>}
-        <Loader visible={loading} />
-        {totalHits > 0 && page * PER_PAGE < totalHits && !loading && (
-          <Button onLoadMore={this.onLoadMore}></Button>
-        )}
-      </>
-    );
-  }
-}
 ImageGallery.propTypes = {
   searchQ: PropTypes.string.isRequired,
 };
