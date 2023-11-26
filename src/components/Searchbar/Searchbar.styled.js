@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import searchIcon from 'icons/search.svg';
 export const Header = styled.header`
   top: 0;
   left: 0;
@@ -31,7 +32,8 @@ export const SearchFormButton = styled.button`
   display: inline-block;
   width: 48px;
   height: 48px;
-  border: 0; 
+  border: 0;
+  background-image: url(${searchIcon});
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;

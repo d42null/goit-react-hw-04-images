@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { ReactComponent as SearchIcon } from 'icons/search.svg';
 import {
   Header,
   SearchForm,
@@ -26,10 +25,8 @@ export const Searchbar = ({ onQuerySubmit }) => {
     <Header>
       <SearchForm onSubmit={onSearchSubmit}>
         <SearchFormButton type="submit">
-          <SearchIcon />
           <SearchFormButtonLabel>Search</SearchFormButtonLabel>
         </SearchFormButton>
-
         <SearchFormInput
           type="text"
           autoComplete="off"
