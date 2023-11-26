@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <>
       <Container>
-        <Searchbar onSubmit={onSearchSubmit} />
+        <Searchbar onQuerySubmit={onSearchSubmit} />
         {searchQ && (
           <ImageGallery
             searchQ={searchQ}

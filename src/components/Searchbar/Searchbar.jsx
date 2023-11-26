@@ -9,7 +9,7 @@ import {
   SearchFormInput,
 } from './Searchbar.styled';
 
-export const Searchbar = ({ onSubmit }) => {
+export const Searchbar = ({ onQuerySubmit }) => {
   const [query, setQuery] = useState('');
 
   const onSearchSubmit = e => {
@@ -18,7 +18,7 @@ export const Searchbar = ({ onSubmit }) => {
       alert('Some query needed');
       return;
     }
-    onSubmit(query);
+    onQuerySubmit(query);
   };
   const onChange = e => setQuery(e.target.value.toLowerCase());
 
@@ -45,5 +45,5 @@ export const Searchbar = ({ onSubmit }) => {
 };
 
 Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  onQuerySubmit: PropTypes.func.isRequired,
 };

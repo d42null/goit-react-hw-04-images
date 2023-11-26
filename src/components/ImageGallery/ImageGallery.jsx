@@ -43,16 +43,18 @@ export const ImageGallery = ({ searchQ, page, onLoadMore }) => {
 
   return (
     <>
-      <Gallery>
-        {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
-          <ImageGalleryItem
-            key={id}
-            webformatURL={webformatURL}
-            tags={tags}
-            largeImageURL={largeImageURL}
-          />
-        ))}
-      </Gallery>
+      {hits.length > 0 && (
+        <Gallery>
+          {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
+            <ImageGalleryItem
+              key={id}
+              webformatURL={webformatURL}
+              tags={tags}
+              largeImageURL={largeImageURL}
+            />
+          ))}
+        </Gallery>
+      )}
       {error && <ErrorMsg>{error.message}</ErrorMsg>}
       <Loader visible={loading} />
       {totalHits > 0 && page * PER_PAGE < totalHits && !loading && (
