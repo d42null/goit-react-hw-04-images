@@ -11,17 +11,15 @@ export const App = () => {
   };
   const onLoadMore = () => setPage(page => page + 1);
   return (
-    <>
-      <Container>
-        <Searchbar onQuerySubmit={onSearchSubmit} />
-        {searchQ && (
-          <ImageGallery
-            searchQ={searchQ}
-            page={page}
-            onLoadMore={onLoadMore}
-          ></ImageGallery>
-        )}
-      </Container>
-    </>
+    <Container>
+      <Searchbar onQuerySubmit={onSearchSubmit} />
+      {searchQ && (
+        <ImageGallery
+          searchQ={searchQ}
+          page={page}
+          onLoadMore={onLoadMore}
+        ></ImageGallery>
+      )}
+    </Container>
   );
 };

@@ -23,7 +23,8 @@ export const ImageGallery = ({ searchQ, page, onLoadMore }) => {
       setTotalHits(0);
       setError(null);
     }
-    const fetchData = async () => {
+    fetchData();
+    async function fetchData() {
       setLoading(true);
       try {
         const data = await getImagesBySearchQuery(searchQ, page);
@@ -37,8 +38,7 @@ export const ImageGallery = ({ searchQ, page, onLoadMore }) => {
       } finally {
         setLoading(false);
       }
-    };
-    fetchData();
+    }
   }, [page, searchQ]);
 
   return (
