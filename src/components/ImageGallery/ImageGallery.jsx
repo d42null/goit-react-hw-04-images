@@ -6,26 +6,25 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { Button } from 'components/Button/Button';
 const PER_PAGE = 12;
-export const ImageGallery = ({ searchQ }) => {
+export const ImageGallery = ({ searchQ, page, onLoadMore }) => {
   const [hits, setHits] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [totalHits, setTotalHits] = useState(0);
   const didMount = useRef(false);
+
   useEffect(() => {
-    setPage(1);
-    setHits([]);
-    setTotalHits(0);
-    setError(null);
-  }, [searchQ]);
-  useEffect(() => {
-    // if (searchQ === '') return;
     if (!didMount.current) {
       didMount.current = true;
       return;
     }
+    if (page === 1) {
+      setHits([]);
+      setTotalHits(0);
+      setError(null);
+    }
     const fetchData = async () => {
+      setLoading(true);
       try {
         const data = await getImagesBySearchQuery(searchQ, page);
         setHits(hits => [...hits, ...data.hits]);
@@ -39,10 +38,9 @@ export const ImageGallery = ({ searchQ }) => {
         setLoading(false);
       }
     };
-    setLoading(true);
     fetchData();
   }, [page, searchQ]);
-  const onLoadMore = e => setPage(page => page + 1);
+
   return (
     <>
       <Gallery>
@@ -66,4 +64,6 @@ export const ImageGallery = ({ searchQ }) => {
 
 ImageGallery.propTypes = {
   searchQ: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
+  onLoadMore: PropTypes.func.isRequired,
 };

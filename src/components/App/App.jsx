@@ -4,12 +4,23 @@ import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { useState } from 'react';
 export const App = () => {
   const [searchQ, setSearchQ] = useState('');
-  const onSearchSubmit = query => setSearchQ(query);
+  const [page, setPage] = useState(1);
+  const onSearchSubmit = query => {
+    setSearchQ(query);
+    setPage(1);
+  };
+  const onLoadMore = () => setPage(page => page + 1);
   return (
     <>
       <Container>
         <Searchbar onSubmit={onSearchSubmit} />
-        {searchQ && <ImageGallery searchQ={searchQ}></ImageGallery>}
+        {searchQ && (
+          <ImageGallery
+            searchQ={searchQ}
+            page={page}
+            onLoadMore={onLoadMore}
+          ></ImageGallery>
+        )}
       </Container>
     </>
   );
