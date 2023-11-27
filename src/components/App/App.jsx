@@ -1,8 +1,11 @@
 import { Searchbar } from 'components/Searchbar/Searchbar';
-import { Container } from './App.styled';
+import { Container, ErrorMsg } from './App.styled';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { getImagesBySearchQuery } from 'services/pixabay-api';
 import { useState, useEffect } from 'react';
+import { Loader } from 'components/Loader/Loader';
+import { Button } from 'components/Button/Button';
+const PER_PAGE = 12;
 export const App = () => {
   const [searchQ, setSearchQ] = useState('');
   const [page, setPage] = useState(1);
@@ -41,15 +44,11 @@ export const App = () => {
   return (
     <Container>
       <Searchbar onQuerySubmit={onSearchSubmit} />
-      {searchQ && hits.length > 0 && (
-        <ImageGallery
-          page={page}
-          hits={hits}
-          loading={loading}
-          error={error}
-          totalHits={totalHits}
-          onLoadMore={onLoadMore}
-        />
+      {searchQ && hits.length > 0 && <ImageGallery hits={hits} />}
+      {error && <ErrorMsg>{error.message}</ErrorMsg>}
+      <Loader visible={loading} />
+      {totalHits > 0 && page * PER_PAGE < totalHits && !loading && (
+        <Button onLoadMore={onLoadMore}></Button>
       )}
     </Container>
   );

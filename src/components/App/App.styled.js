@@ -5,8 +5,11 @@ export const Container = styled.div`
   grid-gap: 16px;
   padding-bottom: 24px;
 `;
+export const ErrorMsg = styled.p`
+  text-align: center;
+`;
 // height: '100vh',
-//  display: 'flex'; 
+//  display: 'flex';
 //         justifyContent: 'center',
 //         alignItems: 'center',
 //         fontSize: 40,
